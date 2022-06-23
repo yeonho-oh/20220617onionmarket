@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header th:fragment="headerFragment">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">					
+				</button>
+				<button type="button" onclick="location.href='/'"><img th:src="@{/myweb/images/양파마켓.gif}"></button>				
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar" align = "right">
+				<form th:action="@{/login}"   action="/login" method="post" id="loginForm" sec:authorize="isAuthenticated()==false">
+					
+					<input type="text" name="id" size="10" placeholder="아이디"><br>
+					<input type="password" name="password" size="10" placeholder="비밀번호"><br>
+					<input type="submit" value="로그인">
+				</form>
+
+				<a th:href="@{/guest/registerForm}" sec:authorize="isAuthenticated()==false" style = "color:white">회원가입</a>
+				<a th:href="@{/guest/findIdForm}" sec:authorize="isAuthenticated()==false" style = "color:white">아이디 찾기</a>
+				<a th:href="@{/guest/findPasswordForm}" sec:authorize="isAuthenticated()==false" style = "color:white">비밀번호 찾기</a>				
+				
+				<th:block sec:authorize="isAuthenticated()">
+					<span sec:authentication="principal.memberName" style = "color:white"></span>
+					<h4 style = "color:white"> 님이 로그인 하셨습니다.</h4><br>
+					<a href="#" id="logoutAction" style = "color:white">로그아웃</a><br>	
+					<form id="logoutForm" th:action="@{/logout}" method="post" style="display: none"></form>
+					<a th:href="@{/updateForm}" style = "color:white">회원정보수정</a><br>	
+					<a th:href="@{/enterCafe}" style = "color:white">카페가기</a><br>
+					<a th:href="@{/admin/main}" sec:authorize="hasRole('ROLE_ADMIN')" style = "color:white">관리자모드</a><br>	
+				</th:block>		
+			</div>
+		</div>
+	</nav>	
+	<script type="text/javascript">
+		$(function() {
+			$("#logoutAction").click(function() {
+				$("#logoutForm").submit();
+			});
+		});
+	</script>	
+</header>
+</html>

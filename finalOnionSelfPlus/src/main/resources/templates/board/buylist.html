@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}" 
+>
+<head>
+<!-- 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+--> 
+<title>BuyList</title>
+</head>
+ <div layout:fragment="main">
+ 	<div align="left">
+ 		<button type="button" th:onclick="|location.href='@{/board/postBuyForm}'|">글쓰기</button>
+ 	</div>
+	<div align="right">
+		<select name="sort" id="sort"> 
+		<option value="no">--정렬 방식을 선택해 주세요.--</option> 
+		<option value="temp">나눔온도순</option> 
+		<option value="date">작성날짜순</option> 
+		<option value="price">가격순</option> 
+		</select>
+		<button type="submit" th:onclick="|javascript:sort()|" class="btn btn-primary btn-outline-dark" >정렬하기</button>
+	</div>
+<table class="table table-bordered table-hover boardlist">
+	<thead>	
+		<tr style="background-color: #333333">
+            <th>NO</th>
+            <th>사진</th>
+            <th>제목</th>
+            <th>가격</th>           
+            <th>열람수</th>
+            <th>나눔온도</th>
+        </tr>
+	</thead>
+	<tbody>	
+		<tr th:each="list : ${list}">
+			<td th:text="${listStat.count}">인덱스</td>
+			<td><img th:src="@{/myweb/images/}+${list.productPicture}" height = "400" width = "400"></td>
+			<td th:text="${list.boardTitle}">제목</td>
+			<td th:text="${list.tradePrice}">가격</td>
+			<td th:text="${list.hits}">열람수</td>
+			<td th:text="${list.memberVO.tempVO.temp}">나눔온도</td>
+		</tr>
+	</tbody>
+</table>	
+
+<a th:if="${pagination.previousPageGroup}" class="page-link" th:href="@{/board/orderbuyList?pageNo=}+${pagination.startPageOfPageGroup-1}">Previous</a>
+
+<li th:each="idx,iterStat : ${#numbers.sequence(pagination.startPageOfPageGroup,pagination.endPageOfPageGroup)}">
+ 	<span th:if="${idx==pagination.nowPage}" th:text="${idx}">
+ 	</span>
+ 	<span th:unless="${idx==pagination.nowPage}">
+ 		<a class="page-link" th:href="@{board/orderbuyList?pageNo=}+${idx}" th:text="${idx}"></a>
+ 	</span>
+</li>
+
+<a th:if="${pagination.nextPageGroup}" class="page-link" th:href="@{/board/orderbuyList?pageNo=}+${pagination.endPageOfPageGroup+1}">Next</a>
+
+<form id="sorting" th:action="@{/board/orderbuyList}" method="post">
+	<input type="hidden" name="sort1" value="">
+	<input type="hidden" name="sorton" value="on">
+</form>
+<script type="text/javascript">
+	function sort(){
+		var sort = $("#sort").val();
+		if(sort=="no"){
+			alert("정렬 방식을 선택해 주세요.");
+			return false;
+		}
+		$('input[name=sort1]').attr('value',sort);
+    document.getElementById("sorting").submit();
+}
+</script>
+</div>
+</html>

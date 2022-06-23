@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosta.myproject.mapper.MemberMapper">
+ 	<sql id="selectMember">
+ 		select MEMBERID,MEMBER_PASSWORD,MEMBER_NAME,MEMBER_ADDRESS from T_MEMBER
+ 	</sql>
+ 	
+ 	<select id="getAddressList" resultType="string">
+ 		select distinct MEMBER_ADDRESS from T_MEMBER
+ 	</select>
+ 	<select id="findMemberListByAddress" resultType="org.kosta.myproject.vo.MemberVO">
+ 		select MEMBERID,MEMBER_NAME from T_MEMBER
+ 		where MEMBER_ADDRESS=#{value}
+ 	</select>
+ 	<!-- <select id="login" resultType="MemberVO" parameterType="MemberVO">
+ 		<include refid="selectMember"></include>
+ 		where id=#{id} and password=#{password}
+ 	</select> -->
+ 	<select id="getMemberCount" resultType="int">
+ 		select count(*) from T_MEMBER
+ 	</select>
+ 	<update id="updateMember" parameterType="org.kosta.myproject.vo.MemberVO">
+		update T_MEMBER set MEMBER_PASSWORD=#{memberPassword},MEMBER_NAME=#{memberName},MEMBER_ADDRESS=#{memberAddress}, MEMBER_NICKNAME=#{memberNickname},MEMBER_TEL=#{memberTel}
+		where MEMBERID=#{memberId}
+	</update>
+	<insert id="registerMember" parameterType="org.kosta.myproject.vo.MemberVO">
+		insert into T_MEMBER(MEMBERID,MEMBER_NAME,MEMBER_PASSWORD,MEMBER_ADDRESS,ONION_POINT,MEMBER_NICKNAME,MEMBER_PICTURE,MEMBER_TEL,enabled)
+		values(#{memberId},#{memberName},#{memberPassword},#{memberAddress},#{onionPoint},#{memberNickname},#{memberNickname},#{memberTel},1)
+	</insert>
+	<insert id="registerMemberTemp" parameterType="org.kosta.myproject.vo.MemberVO">
+		INSERT INTO TEMP(MEMBERID,TEMP,TEMPCOUNT)
+		VALUES(#{memberId},36.5,1)
+	</insert>
+	<select id="idcheck" resultType="int">
+		select count(*) from T_MEMBER where MEMBERID=#{value}
+	</select>
+	<!--  -->
+	<insert id="registerRole" parameterType="org.kosta.myproject.vo.PowerVO">
+		insert into AUTHORITY(MEMBERID,AUTHORITY) values(#{username},#{authority})
+	</insert>
+	<!-- Spring Security에서 로그인 인증시 사용 : 
+	      사용가능한(enabled 1) 계정일 경우만 조회. 
+	 -->
+	<select id="findMemberById" resultType="org.kosta.myproject.vo.MemberVO">
+ 		SELECT	MEMBERID,	MEMBER_PASSWORD,	MEMBER_NAME, MEMBER_ADDRESS, enabled , MEMBER_NICKNAME,MEMBER_PICTURE,MEMBER_TEL
+		FROM	T_MEMBER
+		WHERE 	MEMBERID=#{value}	
+		AND		enabled=1 		
+ 	</select>
+	<!-- Spring Security에서 권한 체크를 위해 사용 -->
+	<select id="findAuthorityByUsername"  resultType="org.kosta.myproject.vo.PowerVO">
+		SELECT	MEMBERID,AUTHORITY
+		FROM	AUTHORITY
+		WHERE MEMBERID=#{username}
+	</select>
+	<select id="findIdByTel" resultType="string" parameterType="string">
+		SELECT MEMBERID FROM T_MEMBER WHERE MEMBER_TEL=#{value}
+	</select>
+	<select id="findPasswordByIdTel" resultType="int" parameterType="org.kosta.myproject.vo.MemberVO">
+		SELECT COUNT(*) FROM T_MEMBER WHERE MEMBER_TEL=#{memberTel} AND MEMBERID=#{memberId}
+	</select>
+	<update id="updatePassword" parameterType="org.kosta.myproject.vo.MemberVO">
+		update T_MEMBER set MEMBER_PASSWORD=#{memberPassword}
+		where MEMBERID=#{memberId} AND MEMBER_TEL=#{memberTel}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+

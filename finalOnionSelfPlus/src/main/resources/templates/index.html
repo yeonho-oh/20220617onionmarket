@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--/* 
+		thymeleaf template layout fragment를 사용해
+		화면 레이아웃을 이용하기 위한 선언 
+		src/main/resources/templates/layouts/layout.html
+		을 이용해 전체 화면 구성을 하되 
+		main fragment 만 변경해서 사용한다 
+ */-->
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <div layout:fragment="main">
+   	 <h4 th:text="${message}" align = "center">home</h4>
+   	 <th:block sec:authorize="isAuthenticated()">
+   	 <div class = "row">
+   	 	<div class="col-sm-4">
+			<h4>삽니다 게시판</h4>
+   	 		<br>   	 		
+   	 		<button type="submit" th:onclick="location.href='/board/buylist'"><img th:src="@{/myweb/images/Buy.PNG}" height = "400" width = "400"></button>
+		</div>
+  		<div class="col-sm-4">
+			<h4>팝니다 게시판</h4>
+   	 		<br>
+   	 		<button type="submit" th:onclick="location.href='/board/salelist'"><img th:src="@{/myweb/images/SALE.PNG}" height = "400" width = "400"></button>
+   	 				</div>
+		<div class="col-sm-4">
+			<h4>마이 페이지? 건의사항?</h4>
+   	 		<br>
+   	 		<img th:src="@{/myweb/images/Chat.PNG}" height = "400" width = "400">
+		</div>
+   	 	</div>
+   	 	</th:block>
+   	  </div>
+</html>

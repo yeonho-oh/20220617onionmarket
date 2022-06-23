@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}" 
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+> <!--/* 	spring-security thymeleaf 선언부를 명시해야 sec:authentication="principal" 와 같이 로그인한 회원 정보에 접근할 수 있음  */-->
+<head>
+<title>spring security ajax</title>
+<!--/*  
+		ajax post 방식일때 csrf token을 전송하기 위한 설정 , get 방식 ajax 요청일때는 필요없음 
+ */-->
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<div layout:fragment="main">
+<!--/* 
+	sec:authentication="principal" 로 로그인한 회원 정보에 접근한다 
+ */-->
+<span sec:authentication="principal.memberAddress">수지</span>에 사는 
+<span sec:authentication="principal.memberName">강하늘</span>님 카페입장을 환영합니다<br><br>
+<!--/* 
+	
+ */-->
+<input type="button" value="총회원수보기(get)" id="countBtn">
+<span id="countView"></span>
+<br><br>
+<input type="text" id="message" placeholder="메세지"> 
+<input type="button" value="메세지(post)" id="messageBtn">
+<span id="resultView"></span>
+<script type="text/javascript">
+	//src\main\resources\static\myweb\js\myproject.js 의 $.ajaxSetup 을 확인한다 
+	// 브라우저 F12 애플리케이션 탭에서 jsession id 삭제 후 아래 서비스를 테스트해서 비로그인 상태에서 총회원수 보기 서비스가 되는 지 확인한다 
+	$(document).ready(			
+	 function() {						 
+				$("#countBtn").click(function() {				
+					$.ajax({
+						type : "get",
+						url : "getMemberTotalCount",
+						success : function(result) {
+							$("#countView").html(result + "명");
+						}
+					});//ajax
+				});//click
+
+	// post 방식일때 ajax csrf token 처리의 예   
+	// spring security 적용시 ajax post 방식은 반드시 아래와 같이 beforeSend property에서 csrf 토큰값을 셋팅해야 함
+	// beforeSend 는 요청을 보내기 전에 수행하는 작업 영역임 
+	// 그렇지 않으면  해킹방지를 위해 error가 발생되도록 되어 있음
+				$("#messageBtn").click(function() {
+					let message=$("#message").val();
+					if(message==""){
+						alert("메세지를 입력하세요!");
+						return;
+					}			
+					// ajax post csrf token 을 위한 설정 
+					let token = $("meta[name='_csrf']").attr("content"); 
+					let header = $("meta[name='_csrf_header']").attr("content");
+
+					$.ajax({
+						type : "post",
+						url : "postAjaxTest",
+						data:"message="+$("#message").val(),						
+						beforeSend : function(xhr){  
+		                    xhr.setRequestHeader(header,token);
+		                },
+						success : function(result) {
+							$("#resultView").html(result);
+						}
+					}).always(function() {
+						$("#message").val("").focus();
+					});//ajax
+				});//click
+	});//ready
+			
+</script>
+</div>
+</html>

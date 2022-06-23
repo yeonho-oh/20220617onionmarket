@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}" 
+>
+<head>
+<meta charset="UTF-8">
+<title>findIdForm</title>
+</head>
+ <div layout:fragment="main">
+	<div class="container pt-4">
+	회원님의  전화번호를 입력해 주십시오
+		<form id="findForm" th:action="@{/guest/findIdByTel}">
+			<input type="text" name="memberTel" size="5" placeholder="전화번호">
+			<input type="submit" value="검색">
+		</form>
+	<!--/*thymeleaf comment*/-->
+	</div>
+</div>
+</html>

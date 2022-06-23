@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}" 
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+<title>관리자메인</title>
+</head>
+<div layout:fragment="main">
+<span sec:authentication="principal.name">강하늘</span>관리자님 Admin main입니다<br>
+</div>
+</html>

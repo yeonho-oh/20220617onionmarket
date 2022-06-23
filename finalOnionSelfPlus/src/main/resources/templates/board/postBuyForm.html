@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}" 
+>
+<head>
+<title>BuyForm</title>
+</head>
+ <div layout:fragment="main">
+ <form method="post" action="WritePostController.do"> 
+	<table class="table table-bordered">
+	 <thead>
+	 	<tr>
+	 		<th>
+			<select name="sort" id="sort"> 
+			<option value="no">--정렬 방식을 선택해 주세요.--</option> 
+			<option value="temp">삽니다</option> 
+			<option value="date">팝니다</option> 
+			</select>
+			</th>
+			<th><button type="button" name="picture">사진업로드</button></th>
+			<th><input type="number" name="price" placeholder="가격" required="required"></th>
+			<th><input type="text" name="title" placeholder="글제목"	required="required"></th>			
+	 	</tr>
+	 </thead>
+	<tbody>
+		<tr>
+			<td colspan="4"><textarea rows="10" class="form-control" name="content"	placeholder="본문내용" required="required"></textarea></td>
+		</tr>
+	</tbody>		
+	</table>
+	<div class="text-center">
+		<button type="submit" class="btn btn-success">확인</button>
+		<button type="reset" class="btn btn-success">취소</button>
+	</div>
+</form>
+ </div>
+
+</html>

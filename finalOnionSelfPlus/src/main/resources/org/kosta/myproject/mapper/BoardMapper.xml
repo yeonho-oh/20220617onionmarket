@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosta.myproject.mapper.BoardMapper">
+	<resultMap type="org.kosta.myproject.vo.TradingBoardVO" id="tradingboardResultMap">
+		<result column="tem" property="memberVO.tempVO.temp"/>
+	</resultMap>
+	<select id="getTotalPostCount" resultType="int">
+		SELECT COUNT(*) FROM TRADING_BOARD
+	</select>
+	<select id="orderByTemp" parameterType="org.kosta.myproject.vo.Pagination" resultMap="tradingboardResultMap">
+		select BOARD_NO, BOARD_TITLE,  rnum, BOARD_DATE, TRADE_PRICE, PRODUCT_PICTURE, MEMBERID,tem
+		from( 
+			select ROW_NUMBER() OVER(ORDER BY tem DESC) as rnum, 
+			BOARD_NO, BOARD_TITLE, BOARD_DATE, TRADE_PRICE, PRODUCT_PICTURE, MEMBERID, tem
+			from ( 
+				select NVL(t.TEMP,0) as tem, b.BOARD_NO, b.BOARD_TITLE, b.BOARD_DATE, b.TRADE_PRICE, b.PRODUCT_PICTURE, b.MEMBERID
+				from TEMP t right outer join TRADING_BOARD b on t.MEMBERID = b.MEMBERID
+			)
+		) 
+		where rnum BETWEEN #{startRowNumber} AND #{endRowNumber}
+	</select>
+	<select id="orderByDate" parameterType="org.kosta.myproject.vo.Pagination"  resultMap="tradingboardResultMap">
+		select BOARD_NO, BOARD_TITLE,  rnum, BOARD_DATE, TRADE_PRICE, PRODUCT_PICTURE, MEMBERID,tem
+		from( 
+			select ROW_NUMBER() OVER(ORDER BY BOARD_DATE DESC) as rnum, 
+			BOARD_NO, BOARD_TITLE, BOARD_DATE, TRADE_PRICE, PRODUCT_PICTURE, MEMBERID, tem
+			from ( 
+				select NVL(t.TEMP,0) as tem, b.BOARD_NO, b.BOARD_TITLE, b.BOARD_DATE, b.TRADE_PRICE, b.PRODUCT_PICTURE, b.MEMBERID
+				from TEMP t right outer join TRADING_BOARD b on t.MEMBERID = b.MEMBERID
+			)
+		) 
+		where rnum BETWEEN #{startRowNumber} AND #{endRowNumber}
+	</select>
+	<select id="orderByPrice" parameterType="org.kosta.myproject.vo.Pagination"  resultMap="tradingboardResultMap">
+		select BOARD_NO, BOARD_TITLE,  rnum, BOARD_DATE, TRADE_PRICE, PRODUCT_PICTURE, MEMBERID,tem
+		from( 
+			select ROW_NUMBER() OVER(ORDER BY TRADE_PRICE DESC) as rnum, 
+			BOARD_NO, BOARD_TITLE, BOARD_DATE, TRADE_PRICE, PRODUCT_PICTURE, MEMBERID, tem
+			from ( 
+				select NVL(t.TEMP,0) as tem, b.BOARD_NO, b.BOARD_TITLE, b.BOARD_DATE, b.TRADE_PRICE, b.PRODUCT_PICTURE, b.MEMBERID
+				from TEMP t right outer join TRADING_BOARD b on t.MEMBERID = b.MEMBERID
+			)
+		) 
+		where rnum BETWEEN #{startRowNumber} AND #{endRowNumber}
+	</select>
+</mapper>
